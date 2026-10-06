@@ -1,22 +1,300 @@
-le premier morceau réel de YONI.<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YONI</title>
+  <title>YONI — Ton avenir commence ici</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a, #172554, #312e81);
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 850px;
+      margin: auto;
+      padding: 40px 0;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 42px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 35px;
+      font-size: 18px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 22px;
+      padding: 28px;
+      margin-bottom: 22px;
+      backdrop-filter: blur(10px);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: #22c55e;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #result {
+      display: none;
+    }
+
+    .profile {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .plan {
+      line-height: 1.7;
+      color: #e2e8f0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 12px;
+      background: rgba(34,197,94,0.2);
+      border-radius: 20px;
+      margin: 5px 5px 15px 0;
+    }
+
+    footer {
+      text-align: center;
+      color: #94a3b8;
+      margin-top: 30px;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>YONI</h1>
+  <div class="container">
 
-  <h2>Trouve ta voie. Construis ton avenir.</h2>
+    <div class="logo">YONI</div>
 
-  <p>
-    YONI aide les jeunes à découvrir leurs forces,
-    développer leurs compétences et construire leur parcours.
-  </p>
+    <p class="subtitle">
+      Ton avenir commence ici 🚀
+    </p>
 
-  <button>Commencer</button>
+    <div class="card">
+      <h2>Découvrons ton objectif</h2>
+
+      <label for="objectif">Que veux-tu atteindre ?</label>
+
+      <select id="objectif">
+        <option value="">Choisis ton objectif</option>
+        <option value="emploi">Trouver un emploi</option>
+        <option value="competences">Développer mes compétences</option>
+        <option value="freelance">Commencer le freelance</option>
+        <option value="entrepreneuriat">Créer mon activité</option>
+      </select>
+
+      <label for="interet">Quel domaine t'intéresse ?</label>
+
+      <select id="interet">
+        <option value="">Choisis un domaine</option>
+        <option value="digital">Digital & technologie</option>
+        <option value="commerce">Commerce & business</option>
+        <option value="creation">Création & communication</option>
+        <option value="social">Social & impact</option>
+      </select>
+
+      <label for="niveau">Quel est ton niveau ?</label>
+
+      <select id="niveau">
+        <option value="">Choisis ton niveau</option>
+        <option value="debutant">Débutant</option>
+        <option value="intermediaire">Intermédiaire</option>
+        <option value="avance">Avancé</option>
+      </select>
+
+      <button onclick="generateProfile()">
+        Découvrir mon parcours YONI ✨
+      </button>
+    </div>
+
+    <div class="card" id="result">
+
+      <div class="badge">Profil YONI</div>
+
+      <div class="profile" id="profile"></div>
+
+      <p id="description" class="plan"></p>
+
+      <br>
+
+      <h2>Ton plan des 30 prochains jours 📅</h2>
+
+      <p id="plan" class="plan"></p>
+
+      <button onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        Modifier mes réponses
+      </button>
+
+    </div>
+
+    <footer>
+      YONI — Construisons ensemble ton avenir.
+    </footer>
+
+  </div>
+
+  <script>
+
+    function generateProfile() {
+
+      const objectif = document.getElementById("objectif").value;
+      const interet = document.getElementById("interet").value;
+      const niveau = document.getElementById("niveau").value;
+
+      if (!objectif || !interet || !niveau) {
+        alert("Choisis une réponse dans chaque catégorie.");
+        return;
+      }
+
+      let profile = "";
+      let description = "";
+      let plan = "";
+
+      if (objectif === "emploi" && interet === "digital") {
+
+        profile = "🚀 Explorateur Digital";
+
+        description =
+          "Tu sembles avoir un profil orienté vers les métiers du numérique. " +
+          "YONI te conseille de développer une compétence digitale concrète " +
+          "et de construire progressivement ton expérience.";
+
+        plan =
+          "Semaine 1 : découvre les métiers du digital et choisis une compétence. " +
+          "Semaine 2 : commence une formation pratique. " +
+          "Semaine 3 : réalise ton premier petit projet. " +
+          "Semaine 4 : crée ton CV, ton portfolio et commence à chercher des opportunités.";
+      }
+
+      else if (objectif === "entrepreneuriat" && interet === "commerce") {
+
+        profile = "💼 Entrepreneur en devenir";
+
+        description =
+          "Tu sembles attiré par le business et la création d'activité. " +
+          "Ton objectif doit maintenant être de transformer une idée en véritable projet.";
+
+        plan =
+          "Semaine 1 : identifie un problème que les clients rencontrent. " +
+          "Semaine 2 : étudie le marché et tes concurrents. " +
+          "Semaine 3 : construis une première offre. " +
+          "Semaine 4 : teste ton offre auprès de vrais clients et améliore-la.";
+      }
+
+      else if (objectif === "freelance" && interet === "creation") {
+
+        profile = "🎨 Créateur & Communicant";
+
+        description =
+          "Ton profil peut correspondre au freelancing dans la création de contenu, " +
+          "le design, les réseaux sociaux ou la communication.";
+
+        plan =
+          "Semaine 1 : choisis un service à vendre. " +
+          "Semaine 2 : crée 3 exemples de travaux. " +
+          "Semaine 3 : prépare ton profil freelance et ton portfolio. " +
+          "Semaine 4 : contacte tes premiers clients et améliore ton offre.";
+      }
+
+      else if (objectif === "competences" && interet === "social") {
+
+        profile = "🌍 Impact & Opportunités";
+
+        description =
+          "Tu sembles intéressé par les compétences utiles aux autres et par les " +
+          "opportunités qui peuvent avoir un impact positif autour de toi.";
+
+        plan =
+          "Semaine 1 : identifie une compétence utile. " +
+          "Semaine 2 : commence une formation. " +
+          "Semaine 3 : pratique avec un petit projet. " +
+          "Semaine 4 : recherche une association, une entreprise ou une opportunité où utiliser cette compétence.";
+      }
+
+      else {
+
+        profile = "🌱 Explorateur YONI";
+
+        description =
+          "Tu es au début de ton parcours. C'est justement le moment idéal pour " +
+          "tester différentes possibilités et découvrir ce qui te correspond le mieux.";
+
+        plan =
+          "Semaine 1 : découvre plusieurs métiers. " +
+          "Semaine 2 : choisis une compétence à apprendre. " +
+          "Semaine 3 : pratique cette compétence avec un petit projet. " +
+          "Semaine 4 : choisis une direction et commence à construire ton parcours.";
+      }
+
+      document.getElementById("profile").textContent = profile;
+      document.getElementById("description").textContent = description;
+      document.getElementById("plan").textContent = plan;
+
+      document.getElementById("result").style.display = "block";
+
+      document.getElementById("result").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+  </script>
 
 </body>
 </html>
