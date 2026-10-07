@@ -192,7 +192,74 @@
 
   <script>
 
-    function generateProfile() {
+   async function generateProfile() {
+  const objectif = document.getElementById("objectif").value;
+  const interet = document.getElementById("intérêt").value;
+  const niveau = document.getElementById("niveau").value;
+
+  if (!objectif || !interet || !niveau) {
+    alert("Choisis une réponse dans chaque catégorie.");
+    return;
+  }
+
+  const profil = document.getElementById("profil");
+  const description = document.getElementById("description");
+  const plan = document.getElementById("plan");
+  const resultat = document.getElementById("résultat");
+
+  profil.textContent = "⏳ YONI analyse ton profil...";
+  description.textContent = "YONI prépare ton analyse personnalisée...";
+  plan.textContent = "Création de ton parcours...";
+  resultat.style.display = "block";
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: `Analyse ce profil YONI :
+Objectif : ${objectif}
+Domaine : ${interet}
+Niveau : ${niveau}
+
+Donne une réponse personnalisée en français simple.
+Présente exactement :
+PROFIL : un profil court
+DESCRIPTION : une analyse personnalisée
+PLAN :
+Semaine 1 :
+Semaine 2 :
+Semaine 3 :
+Semaine 4 :`
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Erreur serveur");
+    }
+
+    const texte = data.response || "";
+
+    profil.textContent = "🎯 Profil YONI";
+    description.textContent = texte;
+    plan.textContent = "Ton parcours est personnalisé selon tes réponses.";
+
+    resultat.style.display = "block";
+    resultat.scrollIntoView({ behavior: "smooth" });
+
+  } catch (error) {
+    console.error(error);
+    profil.textContent = "YONI";
+    description.textContent =
+      "Une erreur est survenue pendant l'analyse. Réessaie dans quelques instants.";
+    plan.textContent = "";
+  }
+}
+ function generateProfile() {
 
       const objectif = document.getElementById("objectif").value;
       const interet = document.getElementById("interet").value;
