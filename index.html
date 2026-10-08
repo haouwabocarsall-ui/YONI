@@ -253,9 +253,7 @@ if (texte) {
   if (planIA) plan = planIA[1].trim();
 }
     profil.textContent = "🎯 Profil YONI";
-    description.textContent = texte;
-    plan.textContent = "Ton parcours est personnalisé selon tes réponses.";
-
+   plan.textContent = planIA ? planIA[1].trim() :"Ton parcours est personnalisé selon tes réponses";
     resultat.style.display = "block";
     resultat.scrollIntoView({ behavior: "smooth" });
 
