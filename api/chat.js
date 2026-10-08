@@ -32,12 +32,13 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(200).json({
-      response: data.output_text
-    });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Erreur serveur"
-    });
+  const texte =
+  data.output_text ||
+  data.output?.[0]?.content?.[0]?.text ||
+  "";
+
+return res.status(200).json({
+  response: texte
+});
   }
 }
