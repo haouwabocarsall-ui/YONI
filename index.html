@@ -256,6 +256,7 @@ if (texte) {
    plan.textContent = planIA ? planIA[1].trim() :"Ton parcours est personnalisé selon tes réponses";
     resultat.style.display = "block";
     resultat.scrollIntoView({ behavior: "smooth" });
+    return;
 
   } catch (error) {
     console.error(error);
