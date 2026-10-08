@@ -243,7 +243,15 @@ Semaine 4 :`
     }
 
     const texte = data.response || "";
+if (texte) {
+  const profilIA = texte.match(/profil\s*[:\-]\s*(.*)/i);
+  const descriptionIA = texte.match(/description\s*[:\-]\s*([\s\S]*?)(?=\nplan\s*[:\-]|$)/i);
+  const planIA = texte.match(/plan\s*[:\-]\s*([\s\S]*)/i);
 
+  if (profilIA) profil = profilIA[1].trim();
+  if (descriptionIA) description = descriptionIA[1].trim();
+  if (planIA) plan = planIA[1].trim();
+}
     profil.textContent = "🎯 Profil YONI";
     description.textContent = texte;
     plan.textContent = "Ton parcours est personnalisé selon tes réponses.";
@@ -259,6 +267,7 @@ Semaine 4 :`
     plan.textContent = "";
   }
 }
+
  function generateProfile() {
 
       const objectif = document.getElementById("objectif").value;
