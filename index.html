@@ -248,7 +248,7 @@ if (texte) {
   const descriptionIA = texte.match(/description\s*[:\-]\s*([\s\S]*?)(?=\nplan\s*[:\-]|$)/i);
   const planIA = texte.match(/plan\s*[:\-]\s*([\s\S]*)/i);
 
-  if (profilIA) profil = profilIA[1].trim();
+ profil.textContent = profilIA ? profilIA[1].trim() : "Profil YONI";
   if (descriptionIA) description = descriptionIA[1].trim();
   if (planIA) plan = planIA[1].trim();
 }
