@@ -191,10 +191,9 @@
   </div>
 
   <script>
-
-   async function generateProfile() {
+async function generateProfile() {
   const objectif = document.getElementById("objectif").value;
-  const interet = document.getElementById("intérêt").value;
+  const interet = document.getElementById("interet").value;
   const niveau = document.getElementById("niveau").value;
 
   if (!objectif || !interet || !niveau) {
@@ -202,15 +201,18 @@
     return;
   }
 
-  const profil = document.getElementById("profil");
-  const description = document.getElementById("description");
-  const plan = document.getElementById("plan");
-  const resultat = document.getElementById("résultat");
+  const profileElement = document.getElementById("profile");
+  const descriptionElement = document.getElementById("description");
+  const planElement = document.getElementById("plan");
+  const resultElement = document.getElementById("result");
+  const button = document.querySelector('button[onclick="generateProfile()"]');
 
-  profil.textContent = "⏳ YONI analyse ton profil...";
-  description.textContent = "YONI prépare ton analyse personnalisée...";
-  plan.textContent = "Création de ton parcours...";
-  resultat.style.display = "block";
+  profileElement.textContent = "⏳ YONI analyse ton profil...";
+  descriptionElement.textContent = "YONI prépare ton analyse personnalisée...";
+  planElement.textContent = "Création de ton parcours...";
+  resultElement.style.display = "block";
+  resultElement.scrollIntoView({ behavior: "smooth" });
+  if (button) button.disabled = true;
 
   try {
     const response = await fetch("/api/chat", {
@@ -219,157 +221,81 @@
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        message: `Analyse ce profil YONI :
+        message: `Analyse ce profil YONI et adapte réellement les conseils aux trois réponses.
+
 Objectif : ${objectif}
 Domaine : ${interet}
 Niveau : ${niveau}
 
-Donne une réponse personnalisée en français simple.
-Présente exactement :
-PROFIL : un profil court
-DESCRIPTION : une analyse personnalisée
+Réponds en français simple, avec des conseils pratiques adaptés au niveau choisi.
+Présente exactement ces trois rubriques :
+PROFIL : un nom court pour le profil
+DESCRIPTION : une analyse personnalisée de quelques phrases
 PLAN :
-Semaine 1 :
-Semaine 2 :
-Semaine 3 :
-Semaine 4 :`
+Semaine 1 : ...
+Semaine 2 : ...
+Semaine 3 : ...
+Semaine 4 : ...`
       })
     });
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error("Le serveur a renvoyé une réponse illisible.");
+    }
 
     if (!response.ok) {
       throw new Error(data.error || "Erreur serveur");
     }
 
-    const texte = data.response || "";
-if (texte) {
-  const profilIA = texte.match(/profil\s*[:\-]\s*(.*)/i);
-  const descriptionIA = texte.match(/description\s*[:\-]\s*([\s\S]*?)(?=\nplan\s*[:\-]|$)/i);
-  const planIA = texte.match(/plan\s*[:\-]\s*([\s\S]*)/i);
+    // Accepte les noms de réponse les plus courants côté API.
+    const texte = data.response || data.output_text || data.texte_de_sortie || "";
 
- profil.textContent = profilIA ? profilIA[1].trim() : "Profil YONI";
-  if (descriptionIA) description = descriptionIA[1].trim();
-  if (planIA) plan = planIA[1].trim();
-}
-    profil.textContent = "🎯 Profil YONI";
-   plan.textContent = planIA ? planIA[1].trim() :"Ton parcours est personnalisé selon tes réponses";
-    resultat.style.display = "block";
-    resultat.scrollIntoView({ behavior: "smooth" });
-    return;
+    if (!texte.trim()) {
+      throw new Error("La réponse de YONI est vide. Vérifie la réponse de l’API.");
+    }
 
+    const profilIA = texte.match(/(?:^|\n)\s*PROFIL\s*[:\-]\s*(.*)/i);
+    const descriptionIA = texte.match(/DESCRIPTION\s*[:\-]\s*([\s\S]*?)(?=\n\s*PLAN\s*[:\-]|$)/i);
+    const planIA = texte.match(/PLAN\s*[:\-]\s*([\s\S]*)/i);
+
+    profileElement.textContent = profilIA
+      ? profilIA[1].trim()
+      : "🎯 Profil YONI";
+
+    descriptionElement.textContent = descriptionIA
+      ? descriptionIA[1].trim()
+      : texte.trim();
+
+    planElement.textContent = planIA
+      ? planIA[1].trim()
+      : "Ton parcours est personnalisé selon tes réponses. Consulte l’analyse ci-dessus pour les recommandations.";
+
+    resultElement.style.display = "block";
+    resultElement.scrollIntoView({ behavior: "smooth" });
   } catch (error) {
-    console.error(error);
-    profil.textContent = "YONI";
-    description.textContent =
-      "Une erreur est survenue pendant l'analyse. Réessaie dans quelques instants.";
-    plan.textContent = "";
+    console.error("Erreur YONI :", error);
+    profileElement.textContent = "YONI";
+    descriptionElement.textContent =
+      error.message || "Une erreur est survenue pendant l’analyse. Réessaie dans quelques instants.";
+    planElement.textContent = "";
+    resultElement.style.display = "block";
+  } finally {
+    if (button) button.disabled = false;
   }
 }
-
- function generateProfile() {
-
-      const objectif = document.getElementById("objectif").value;
-      const interet = document.getElementById("interet").value;
-      const niveau = document.getElementById("niveau").value;
-
-      if (!objectif || !interet || !niveau) {
-        alert("Choisis une réponse dans chaque catégorie.");
-        return;
-      }
-
-      let profile = "";
-      let description = "";
-      let plan = "";
-
-      if (objectif === "emploi" && interet === "digital") {
-
-        profile = "🚀 Explorateur Digital";
-
-        description =
-          "Tu sembles avoir un profil orienté vers les métiers du numérique. " +
-          "YONI te conseille de développer une compétence digitale concrète " +
-          "et de construire progressivement ton expérience.";
-
-        plan =
-          "Semaine 1 : découvre les métiers du digital et choisis une compétence. " +
-          "Semaine 2 : commence une formation pratique. " +
-          "Semaine 3 : réalise ton premier petit projet. " +
-          "Semaine 4 : crée ton CV, ton portfolio et commence à chercher des opportunités.";
-      }
-
-      else if (objectif === "entrepreneuriat" && interet === "commerce") {
-
-        profile = "💼 Entrepreneur en devenir";
-
-        description =
-          "Tu sembles attiré par le business et la création d'activité. " +
-          "Ton objectif doit maintenant être de transformer une idée en véritable projet.";
-
-        plan =
-          "Semaine 1 : identifie un problème que les clients rencontrent. " +
-          "Semaine 2 : étudie le marché et tes concurrents. " +
-          "Semaine 3 : construis une première offre. " +
-          "Semaine 4 : teste ton offre auprès de vrais clients et améliore-la.";
-      }
-
-      else if (objectif === "freelance" && interet === "creation") {
-
-        profile = "🎨 Créateur & Communicant";
-
-        description =
-          "Ton profil peut correspondre au freelancing dans la création de contenu, " +
-          "le design, les réseaux sociaux ou la communication.";
-
-        plan =
-          "Semaine 1 : choisis un service à vendre. " +
-          "Semaine 2 : crée 3 exemples de travaux. " +
-          "Semaine 3 : prépare ton profil freelance et ton portfolio. " +
-          "Semaine 4 : contacte tes premiers clients et améliore ton offre.";
-      }
-
-      else if (objectif === "competences" && interet === "social") {
-
-        profile = "🌍 Impact & Opportunités";
-
-        description =
-          "Tu sembles intéressé par les compétences utiles aux autres et par les " +
-          "opportunités qui peuvent avoir un impact positif autour de toi.";
-
-        plan =
-          "Semaine 1 : identifie une compétence utile. " +
-          "Semaine 2 : commence une formation. " +
-          "Semaine 3 : pratique avec un petit projet. " +
-          "Semaine 4 : recherche une association, une entreprise ou une opportunité où utiliser cette compétence.";
-      }
-
-      else {
-
-        profile = "🌱 Explorateur YONI";
-
-        description =
-          "Tu es au début de ton parcours. C'est justement le moment idéal pour " +
-          "tester différentes possibilités et découvrir ce qui te correspond le mieux.";
-
-        plan =
-          "Semaine 1 : découvre plusieurs métiers. " +
-          "Semaine 2 : choisis une compétence à apprendre. " +
-          "Semaine 3 : pratique cette compétence avec un petit projet. " +
-          "Semaine 4 : choisis une direction et commence à construire ton parcours.";
-      }
-
-      document.getElementById("profile").textContent = profile;
-      document.getElementById("description").textContent = description;
-      document.getElementById("plan").textContent = plan;
-
-      document.getElementById("result").style.display = "block";
-
-      document.getElementById("result").scrollIntoView({
-        behavior: "smooth"
-      });
-    }
 
   </script>
 
 </body>
 </html>
+
+ 
+   
+ 
+
+  
+ 
+
